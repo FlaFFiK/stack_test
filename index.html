@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Assets/css/style.css">
+    <link rel="stylesheet" href="Assets/css/reset.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <title>Справочник</title>
+</head>
+
+<body>
+    <div id="app">
+        <div class="header header__wrapper">
+            <div class="form__group field">
+                <input type="text" value="" v-model="inputSearch" @input="search(inputSearch)" placeholder="Поиск">
+                <label for="name" class="form__label">Поиск</label>
+            </div>
+            <button class="header__btn" @click="openPopap(true)">Добавить</button>
+        </div>
+        <div class="container">
+            <table class="main__table">
+                <tr class="main__table-header">
+                    <td :class="SortNameClass" @click="sortTable('name')">Название</td>
+                    <td :class="SortDirectorClass" @click="sortTable('director')">ФИО директора</td>
+                    <td>Телефон</td>
+                    <td></td>
+                </tr>
+                <tr class="main__table-content" v-for="item in paginatedItems" v-bind:key="item.id">
+                    <td>{{ item.company_name }}</td>
+                    <td>{{ item.fio_director }}</td>
+                    <td><a :href="'tel:' + convertPhoneNumber(item.phone)">{{ item.phone }}</a></td>
+                    <td class="main__table-content-delete"><img src="Assets/img/close.png" alt="Удалить"
+                            @click="delete_row(item.id)"></td>
+                </tr>
+            </table>
+            <div class="pagination">
+                <button @click="previousPage" :disabled="currentPage === 1" class="pagination__button-arrow"><img
+                        src="Assets/img/arrow_icon.png" alt="" class="arrow back"></button>
+                <div class="pagination-text">Страница {{currentPage}}</div>
+                <button @click="nextPage" :disabled="currentPage === totalPages" class="pagination__button-arrow"><img
+                        src="Assets/img/arrow_icon.png" alt="" class="arrow next"></button>
+            </div>
+        </div>
+        <div class="popap" :class="{active : popapStatus}">
+            <form class="popap__form" action="" onsubmit="return false">
+                <h4>Добавить организацию</h4>
+                <div class="form__group field">
+                     <input type="text" v-model="item_add.company_name" @input="formRefresh" placeholder="Название">
+                     <label for="name" class="form__label">Название</label>
+                </div>
+                <div class="form__group field">
+                    <input type="tel" @input="formatPhoneNumber(); formRefresh()" v-model="item_add.phone" maxlength="11"
+                    placeholder="Номер телефона">
+                    <label for="name" class="form__label">Телефон</label>
+                </div>
+                <div class="form__group field">
+                    <input type="text" @input="formRefresh" v-model="item_add.fio_director" placeholder="ФИО директора">
+                    <label for="name" class="form__label">ФИО</label>
+                </div>
+                <div class="popap_form-down">
+                    <button class="popap__form-btn" @click="openPopap(false)">Отмена</button>
+                    <button class="popap__form-btn" :disabled="!ButtonStatus" @click="addData()">ОК</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="Assets/script/script.js"></script>
+</body>
+
+</html>
